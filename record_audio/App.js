@@ -6,6 +6,7 @@
  * @flow strict-local
  */
 
+import {Player, Recorder} from '@react-native-community/audio-toolkit';
 import React from 'react';
 import {
   SafeAreaView,
@@ -14,17 +15,77 @@ import {
   View,
   Text,
   StatusBar,
+  Pressable,
+  // PermissionsAndroid,
 } from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-const App: () => React$Node = () => {
+const App = () => {
+  // const permissionRecordAudio = PermissionsAndroid.check(
+  //   'android.permission.RECORD_AUDIO',
+  // );
+
+  const recorder = new Recorder('audio.mp3');
+
+  const recorderRecord = () => {
+    if (recorder.canPrepare) {
+      console.log('recording');
+      recorder.record();
+    }
+  };
+
+  const recorderState = () => {
+    console.log(
+      'recorder state: ' + recorder.state + '\n' + 'fsPath:' + recorder.fsPath,
+    );
+  };
+
+  const recorderStop = () => {
+    if (recorder.isRecording) {
+      console.log('stopping recorder');
+      recorder.stop();
+    }
+  };
+
+  // const player = new Player(
+  //   'https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3',
+  // );
+
+  const player = new Player('audio.mp3');
+
+  const playerPlay = () => {
+    if (player.canPrepare) {
+      console.log('playing player');
+      player.play();
+    }
+  };
+
+  const playerState = () => {
+    console.log('recorder state: ' + player.state);
+  };
+
+  const playerPause = () => {
+    if (player.isPlaying) {
+      console.log('pausing player');
+      player.pause();
+    }
+  };
+
+  const playerUnpause = () => {
+    if (player.isPaused && player.canPlay) {
+      console.log('unpausing player');
+      player.play();
+    }
+  };
+
+  const playerStop = () => {
+    if (player.isPlaying && player.canStop) {
+      console.log('stopping player');
+      player.stop();
+    }
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -32,39 +93,47 @@ const App: () => React$Node = () => {
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
           <View style={styles.body}>
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
+              <Pressable onPress={() => recorderRecord()}>
+                <Text>Record the audio</Text>
+              </Pressable>
             </View>
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
+              <Pressable onPress={() => recorderState()}>
+                <Text>Get Recorder State</Text>
+              </Pressable>
             </View>
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
+              <Pressable onPress={() => recorderStop()}>
+                <Text>Stop the recorder</Text>
+              </Pressable>
             </View>
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
+              <Pressable onPress={() => playerPlay()}>
+                <Text>Play the audio</Text>
+              </Pressable>
             </View>
-            <LearnMoreLinks />
+            <View style={styles.sectionContainer}>
+              <Pressable onPress={() => playerState()}>
+                <Text>Get the Player State</Text>
+              </Pressable>
+            </View>
+            <View style={styles.sectionContainer}>
+              <Pressable onPress={() => playerPause()}>
+                <Text>Pause the audio</Text>
+              </Pressable>
+            </View>
+            <View style={styles.sectionContainer}>
+              <Pressable onPress={() => playerUnpause()}>
+                <Text>Unpause the audio</Text>
+              </Pressable>
+            </View>
+            <View style={styles.sectionContainer}>
+              <Pressable onPress={() => playerStop()}>
+                <Text>Stop the audio</Text>
+              </Pressable>
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
