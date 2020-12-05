@@ -1,0 +1,12 @@
+{
+  "name": "record_audio_expo",
+  "displayName": "record_audio_expo",
+  "expo": {
+    "name": "record_audio_expo",
+    "slug": "record_audio_expo",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
