@@ -6,7 +6,11 @@
  * @flow strict-local
  */
 
-import {Player, Recorder} from '@react-native-community/audio-toolkit';
+import {
+  MediaStates,
+  Player,
+  Recorder,
+} from '@react-native-community/audio-toolkit';
 import React from 'react';
 import {
   SafeAreaView,
@@ -16,28 +20,40 @@ import {
   Text,
   StatusBar,
   Pressable,
-  // PermissionsAndroid,
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 const App = () => {
-  // const permissionRecordAudio = PermissionsAndroid.check(
-  //   'android.permission.RECORD_AUDIO',
-  // );
-
-  const recorder = new Recorder('audio.mp3');
+  let recorder = new Recorder('audio.mp3');
 
   const recorderRecord = () => {
     if (recorder.canPrepare) {
       console.log('recording');
       recorder.record();
     }
+
+    if (
+      recorder.state === MediaStates.ERROR ||
+      recorder.state === MediaStates.DESTROYED
+    ) {
+      recorder.destroy();
+      console.log('new recorder');
+      recorder = new Recorder('audio.mp3');
+      recorderRecord();
+    }
   };
 
   const recorderState = () => {
     console.log(
-      'recorder state: ' + recorder.state + '\n' + 'fsPath:' + recorder.fsPath,
+      'recorder state: ' +
+        recorder.state +
+        '\n' +
+        'recorder is recording: ' +
+        recorder.isRecording +
+        '\n' +
+        'fsPath:' +
+        recorder.fsPath,
     );
   };
 
@@ -52,11 +68,18 @@ const App = () => {
   //   'https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3',
   // );
 
-  const player = new Player('audio.mp3');
+  let player = new Player('audio.mp3');
 
   const playerPlay = () => {
-    if (player.canPrepare) {
+    if (player.canPrepare || player.canPlay) {
       console.log('playing player');
+      player.play();
+    }
+
+    if (player.state === MediaStates.ERROR) {
+      player.destroy();
+      console.log('new player');
+      player = new Player('audio.mp3');
       player.play();
     }
   };
@@ -94,6 +117,13 @@ const App = () => {
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
           <View style={styles.body}>
+            <View style={styles.sectionContainer}>
+              <Pressable
+                onPressIn={() => recorderRecord()}
+                onPressOut={() => recorderStop()}>
+                <Text>Press to record the audio</Text>
+              </Pressable>
+            </View>
             <View style={styles.sectionContainer}>
               <Pressable onPress={() => recorderRecord()}>
                 <Text>Record the audio</Text>
