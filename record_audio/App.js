@@ -20,28 +20,66 @@ import {
   Text,
   StatusBar,
   Pressable,
+  PermissionsAndroid,
+  Platform,
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 const App = () => {
+  const checkRecordAudioPermission = async () => {
+    if (Platform.OS !== 'android') {
+      return Promise.resolve(true);
+    }
+
+    let result;
+    try {
+      result = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        {
+          title: 'Microphone Permission',
+          message: 'The Push To Talk Service needs access to your microphone.',
+        },
+      );
+
+      if (
+        result === PermissionsAndroid.RESULTS.DENIED ||
+        result === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN
+      ) {
+        console.log('PermissionsAndroid.RESULTS: ' + result);
+        return false;
+      } else {
+        console.log('PermissionsAndroid.RESULTS: ' + result);
+        return true;
+      }
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+
   let recorder = new Recorder('audio.mp3');
 
   const recorderRecord = () => {
-    if (recorder.canPrepare) {
-      console.log('recording');
-      recorder.record();
-    }
+    const recordAudioPermission = checkRecordAudioPermission();
 
-    if (
-      recorder.state === MediaStates.ERROR ||
-      recorder.state === MediaStates.DESTROYED
-    ) {
-      recorder.destroy();
-      console.log('new recorder');
-      recorder = new Recorder('audio.mp3');
-      recorderRecord();
-    }
+    recordAudioPermission.then((result) => {
+      if (result) {
+        if (recorder.canPrepare) {
+          console.log('recording');
+          recorder.record();
+        }
+        if (
+          recorder.state === MediaStates.ERROR ||
+          recorder.state === MediaStates.DESTROYED
+        ) {
+          recorder.destroy();
+          console.log('new recorder');
+          recorder = new Recorder('audio.mp3');
+          recorderRecord();
+        }
+      }
+    });
   };
 
   const recorderState = () => {
