@@ -24,7 +24,7 @@ export default function App() {
         await recorder.prepareToRecordAsync(
           Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY
         );
-        console.log("recorder is prepared");
+        console.log(`recorder is prepared: ${recorder.getURI()}`);
         await recorder.startAsync();
         console.log("recorder is recording");
       } catch (error) {
@@ -38,7 +38,7 @@ export default function App() {
   };
 
   const recorderStop = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500)); // handle Error: Stop encountered an error: recording not stopped
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // handle Error: Stop encountered an error: recording not stopped
     const status = await recorder.getStatusAsync();
     if (status.isRecording === true) {
       try {
@@ -47,6 +47,29 @@ export default function App() {
       } catch (error) {
         console.error(`recorderStop(): ${error}`);
       }
+    }
+  };
+
+  const player = new Audio.Sound();
+
+  const playerPlay = async (uri: string) => {
+    try {
+      await player.loadAsync({
+        uri,
+      });
+      await player.playAsync();
+      console.log("player is playing");
+    } catch (error) {
+      console.error(`playerPlay(): ${error}`);
+    }
+  };
+
+  const playerStop = async () => {
+    try {
+      await player.unloadAsync();
+      console.log("player unloaded");
+    } catch (error) {
+      console.error(`playerStop(): ${error}`);
     }
   };
 
@@ -64,6 +87,22 @@ export default function App() {
               onPressOut={() => recorderStop()}
             >
               <Text>Press to record the audio</Text>
+            </Pressable>
+          </View>
+          <View style={styles.sectionContainer}>
+            <Pressable
+              onPress={() =>
+                playerPlay(
+                  "file:///data/user/0/com.recordaudioexpo/cache/Audio/recording-84b53377-77ee-4ed2-82fc-f0eb76faf017.3gp"
+                )
+              }
+            >
+              <Text>Play the audio</Text>
+            </Pressable>
+          </View>
+          <View style={styles.sectionContainer}>
+            <Pressable onPress={() => playerStop()}>
+              <Text>Stop the audio</Text>
             </Pressable>
           </View>
         </View>
