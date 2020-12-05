@@ -15,11 +15,11 @@ export default function App() {
 
   const recorderRecord = async () => {
     const status = await recorder.getStatusAsync();
-    if (status.isDoneRecording) {
+    if (status.isDoneRecording === true) {
       recorder = new Audio.Recording();
       console.log("new recorder object");
     }
-    if (!status.canRecord) {
+    if (status.canRecord === false) {
       try {
         await recorder.prepareToRecordAsync(
           Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY
