@@ -30,31 +30,37 @@ const App = () => {
   const checkRecordAudioPermission = async () => {
     if (Platform.OS !== 'android') {
       return Promise.resolve(true);
-    }
+    } else {
+      try {
+        let recordAudioPermission = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+          {
+            title: 'Microphone Permission',
+            message:
+              'The Push To Talk Service needs access to your microphone.',
+          },
+        );
 
-    let result;
-    try {
-      result = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-        {
-          title: 'Microphone Permission',
-          message: 'The Push To Talk Service needs access to your microphone.',
-        },
-      );
-
-      if (
-        result === PermissionsAndroid.RESULTS.DENIED ||
-        result === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN
-      ) {
-        console.log('PermissionsAndroid.RESULTS: ' + result);
+        if (
+          recordAudioPermission === PermissionsAndroid.RESULTS.DENIED ||
+          recordAudioPermission === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN
+        ) {
+          console.log(
+            'PermissionsAndroid.PERMISSIONS.RECORD_AUDIO: ' +
+              recordAudioPermission,
+          );
+          return false;
+        } else {
+          console.log(
+            'PermissionsAndroid.PERMISSIONS.RECORD_AUDIO: ' +
+              recordAudioPermission,
+          );
+          return true;
+        }
+      } catch (error) {
+        console.error(error);
         return false;
-      } else {
-        console.log('PermissionsAndroid.RESULTS: ' + result);
-        return true;
       }
-    } catch (error) {
-      console.error(error);
-      return false;
     }
   };
 
@@ -114,12 +120,14 @@ const App = () => {
       player.play();
     }
 
-    if (player.state === MediaStates.ERROR) {
-      player.destroy();
-      console.log('new player');
-      player = new Player('audio.mp3');
-      player.play();
-    }
+    setTimeout(() => {
+      if (player.state === MediaStates.ERROR) {
+        player.destroy();
+        console.log('new player');
+        player = new Player('audio.mp3');
+        player.play();
+      }
+    }, 500);
   };
 
   const playerState = () => {
