@@ -75,15 +75,18 @@ const App = () => {
           console.log('recording');
           recorder.record();
         }
-        if (
-          recorder.state === MediaStates.ERROR ||
-          recorder.state === MediaStates.DESTROYED
-        ) {
-          recorder.destroy();
-          console.log('new recorder');
-          recorder = new Recorder('audio.mp3');
-          recorderRecord();
-        }
+
+        setTimeout(() => {
+          if (
+            recorder.state === MediaStates.ERROR ||
+            recorder.state === MediaStates.DESTROYED
+          ) {
+            recorder.destroy();
+            console.log('new recorder');
+            recorder = new Recorder('audio.mp3');
+            recorderRecord();
+          }
+        }, 500);
       }
     });
   };
