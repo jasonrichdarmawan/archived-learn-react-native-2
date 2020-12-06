@@ -54,6 +54,10 @@ export default function App() {
   const player = new Audio.Sound();
 
   const playerPlay = async (uri: string) => {
+    const status = await player.getStatusAsync();
+    if (status.isLoaded === true) {
+      await playerStop();
+    }
     try {
       await player.loadAsync({
         uri,
