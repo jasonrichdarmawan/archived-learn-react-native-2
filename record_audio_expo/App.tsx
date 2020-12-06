@@ -39,7 +39,10 @@ export default function App() {
   };
 
   /**
-   * // TODO: fix Error: Stop encountered an error: recording not stopped
+   * // TODO: fix Error: Stop encountered an error: recording not stopped || Error: Cannot unload a Recording that has not been prepared.
+   * Steps to reproduce: Spam the 'Press to record the audio' button
+   * Severity: Minor
+   *
    * https://github.com/expo/expo/issues/1709
    */
   const recorderStop = async () => {
@@ -65,6 +68,9 @@ export default function App() {
         } else if (
           error.message.includes(
             "Cannot unload a Recording that has already been unloaded."
+          ) ||
+          error.message.includes(
+            "Error: Cannot unload a Recording that has not been prepared."
           )
         ) {
           console.log(`recorderStop() error handler: ${error}`);
