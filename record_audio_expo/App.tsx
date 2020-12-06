@@ -38,6 +38,10 @@ export default function App() {
     }
   };
 
+  /**
+   * // TODO: fix Error: Stop encountered an error: recording not stopped
+   * https://github.com/expo/expo/issues/1709
+   */
   const recorderStop = async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000)); // handle Error: Stop encountered an error: recording not stopped
     const status = await recorder.getStatusAsync();
