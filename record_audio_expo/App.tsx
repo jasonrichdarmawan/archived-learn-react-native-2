@@ -69,6 +69,23 @@ export default function App() {
     }
   };
 
+  const playerPause = async () => {
+    try {
+      await player.pauseAsync();
+      console.log("player paused");
+    } catch (error) {
+      console.error(`playerPause(): ${error}`);
+    }
+  };
+
+  const playerUnpause = async () => {
+    try {
+      await player.playAsync();
+    } catch (error) {
+      console.error(`playerUnpause(): ${error}`);
+    }
+  };
+
   const playerStop = async () => {
     try {
       await player.unloadAsync();
@@ -106,8 +123,13 @@ export default function App() {
             </Pressable>
           </View>
           <View style={styles.sectionContainer}>
-            <Pressable onPress={() => playerStop()}>
-              <Text>Stop the audio</Text>
+            <Pressable onPress={() => playerPause()}>
+              <Text>Pause the audio</Text>
+            </Pressable>
+          </View>
+          <View style={styles.sectionContainer}>
+            <Pressable onPress={() => playerUnpause()}>
+              <Text>Unpause the audio</Text>
             </Pressable>
           </View>
         </View>
