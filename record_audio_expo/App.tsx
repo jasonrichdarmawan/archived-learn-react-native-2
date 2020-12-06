@@ -18,7 +18,7 @@ export default function App() {
     const status = await recorder.getStatusAsync();
     if (status.isDoneRecording === true) {
       recorder = new Audio.Recording();
-      console.log("new recorder object");
+      console.log("recorderRecord(): new recorder object");
     }
     if (status.canRecord === false) {
       try {
@@ -50,7 +50,27 @@ export default function App() {
         await recorder.stopAndUnloadAsync();
         console.log("recorder stopped");
       } catch (error) {
-        console.error(`recorderStop(): ${error}`);
+        if (
+          error.message.includes(
+            "Stop encountered an error: recording not stopped"
+          )
+        ) {
+          await recorder._cleanupForUnloadedRecorder({
+            canRecord: false,
+            durationMillis: 0,
+            isRecording: false,
+            isDoneRecording: false,
+          });
+          console.log(`recorderStop() error handler: ${error}`);
+        } else if (
+          error.message.includes(
+            "Cannot unload a Recording that has already been unloaded."
+          )
+        ) {
+          console.log(`recorderStop() error handler: ${error}`);
+        } else {
+          console.error(`recorderStop(): ${error}`);
+        }
       }
     }
   };
