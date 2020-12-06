@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { Audio } from "expo-av";
+import * as FileSystem from "expo-file-system";
 
 export default function App() {
   let recorder = new Audio.Recording();
@@ -93,7 +94,7 @@ export default function App() {
             <Pressable
               onPress={() =>
                 playerPlay(
-                  "file:///data/user/0/com.recordaudioexpo/cache/Audio/recording-84b53377-77ee-4ed2-82fc-f0eb76faf017.3gp"
+                  `${FileSystem.cacheDirectory}Audio/recording-84b53377-77ee-4ed2-82fc-f0eb76faf017.3gp`
                 )
               }
             >
