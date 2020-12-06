@@ -39,7 +39,7 @@ export default function App() {
   };
 
   /**
-   * // TODO: fix Error: Stop encountered an error: recording not stopped || Error: Cannot unload a Recording that has not been prepared.
+   * // TODO: fix Error: Cannot unload a Recording that has already been unloaded. || Error: Cannot unload a Recording that has not been prepared.
    * Steps to reproduce: Spam the 'Press to record the audio' button
    * Severity: Minor
    *
