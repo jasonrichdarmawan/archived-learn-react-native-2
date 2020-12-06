@@ -70,10 +70,10 @@ export default function App() {
             "Cannot unload a Recording that has already been unloaded."
           ) ||
           error.message.includes(
-            "Error: Cannot unload a Recording that has not been prepared."
+            "Cannot unload a Recording that has not been prepared."
           )
         ) {
-          console.log(`recorderStop() error handler: ${error}`);
+          console.log(`recorderStop() to do error handler: ${error}`);
         } else {
           console.error(`recorderStop(): ${error}`);
         }
