@@ -13,6 +13,7 @@ import * as FileSystem from "expo-file-system";
 
 export default function App() {
   let recorder = new Audio.Recording();
+  let uri: string | null;
 
   const recorderRecord = async () => {
     const status = await recorder.getStatusAsync();
@@ -25,7 +26,8 @@ export default function App() {
         await recorder.prepareToRecordAsync(
           Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY
         );
-        console.log(`recorder is prepared: ${recorder.getURI()}`);
+        uri = recorder.getURI();
+        console.log(`recorder is prepared: ${uri}`);
         await recorder.startAsync();
         console.log("recorder is recording");
       } catch (error) {
@@ -143,11 +145,11 @@ export default function App() {
           </View>
           <View style={styles.sectionContainer}>
             <Pressable
-              onPress={() =>
-                playerPlay(
-                  `${FileSystem.cacheDirectory}Audio/recording-84b53377-77ee-4ed2-82fc-f0eb76faf017.3gp`
-                )
-              }
+              onPress={() => {
+                if (uri != null) {
+                  playerPlay(uri);
+                }
+              }}
             >
               <Text>Play the audio</Text>
             </Pressable>
