@@ -10,7 +10,11 @@ import {
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { Audio } from "expo-av";
 // import * as FileSystem from "expo-file-system";
-import RNBluetoothClassic from "react-native-bluetooth-classic";
+import RNBluetoothClassic, {
+  BluetoothDeviceReadEvent,
+  BluetoothEventSubscription,
+} from "react-native-bluetooth-classic";
+import BluetoothDevice from "react-native-bluetooth-classic/lib/BluetoothDevice";
 
 export default function App() {
   let recorder = new Audio.Recording();
@@ -145,6 +149,15 @@ export default function App() {
     }
   };
 
+  const bluetoothBondedDevices = async () => {
+    try {
+      const list = await RNBluetoothClassic.getBondedDevices();
+      console.log(list);
+    } catch (error) {
+      console.error(`bluetoothList(): ${error}`);
+    }
+  };
+
   /**
    * // TODO: fix bluetooth is connected although bluetooth is not enabled.
    * Steps to reproduce: Connect to a bluetooth device -> disable the bluetooth -> use method bluetoothIsConnected();
@@ -161,7 +174,9 @@ export default function App() {
     }
   };
 
-  let bluetoothAddress = "00:13:04:84:03:07"; // TODO: let the user choose.
+  let bluetoothDeviceAddress = "00:13:04:84:03:07"; // TODO: let the user choose.
+  let bluetoothDevice: BluetoothDevice;
+  let bluetoothReadSubscription: BluetoothEventSubscription;
 
   const bluetoothConnect = async (address: string) => {
     const enabled = await bluetoothIsEnabled();
@@ -171,9 +186,15 @@ export default function App() {
         if (connected === false) {
           await RNBluetoothClassic.connectToDevice(address);
           const result = await bluetoothIsConnected(address);
-          console.log(
-            `connected to bluetooth device with address '${address}': ${result}`
-          );
+          if (result === true) {
+            bluetoothDevice = await RNBluetoothClassic.getConnectedDevice(
+              bluetoothDeviceAddress
+            );
+            bluetoothReadSubscription = bluetoothDevice.onDataReceived(data => bluetoothOnDataReceived(data));
+            console.log(
+              `connected to bluetooth device with address '${address}'`
+            );
+          }
         }
       } catch (error) {
         console.error(`bluetoothConnect(): ${error}`);
@@ -181,13 +202,8 @@ export default function App() {
     }
   };
 
-  const bluetoothBondedDevices = async () => {
-    try {
-      const list = await RNBluetoothClassic.getBondedDevices();
-      console.log(list);
-    } catch (error) {
-      console.error(`bluetoothList(): ${error}`);
-    }
+  const bluetoothOnDataReceived = (event: BluetoothDeviceReadEvent) => {
+    console.log(event)
   };
 
   React.useEffect(() => {
@@ -235,8 +251,8 @@ export default function App() {
           <View style={styles.sectionContainer}>
             <Pressable
               onPress={() => {
-                if (bluetoothAddress !== null) {
-                  bluetoothConnect(bluetoothAddress);
+                if (bluetoothDeviceAddress !== null) {
+                  bluetoothConnect(bluetoothDeviceAddress);
                 }
               }}
             >
