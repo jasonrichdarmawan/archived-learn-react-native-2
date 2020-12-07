@@ -13,8 +13,13 @@ import { Audio } from "expo-av";
 import RNBluetoothClassic, {
   BluetoothDeviceReadEvent,
   BluetoothEventSubscription,
+  BluetoothDevice,
 } from "react-native-bluetooth-classic";
-import BluetoothDevice from "react-native-bluetooth-classic/lib/BluetoothDevice";
+
+// To Do: From discussion with the owner, the react-natie-bluetooth-classic auto generate the types,
+// to avoid types issue, we should use .js, and isolate the component as small as possible.
+// react-native-bluetooth-classic current version: v1.60.0-rc.4"
+// import BluetoothDevice from "react-native-bluetooth-classic/lib/BluetoothDevice";
 
 export default function App() {
   let recorder = new Audio.Recording();
@@ -178,6 +183,11 @@ export default function App() {
   let bluetoothDevice: BluetoothDevice;
   let bluetoothReadSubscription: BluetoothEventSubscription;
 
+  /**
+   * // To Do: fix bluetoothDevice.connect({ delimiter: String.fromCharCode(13) }) is ignored.
+   * // Potential cause of error: the connected device can't change delimiter.
+   * @param address
+   */
   const bluetoothConnect = async (address: string) => {
     const enabled = await bluetoothIsEnabled();
     if (enabled === true) {
@@ -190,6 +200,7 @@ export default function App() {
             bluetoothDevice = await RNBluetoothClassic.getConnectedDevice(
               bluetoothDeviceAddress
             );
+            bluetoothDevice.connect({ delimiter: String.fromCharCode(13) });
             bluetoothReadSubscription = bluetoothDevice.onDataReceived((data) =>
               bluetoothOnDataReceived(data)
             );
@@ -209,7 +220,7 @@ export default function App() {
     const LF = String.fromCharCode(10);
     const pttPressIn = `C:BRGIN*${CR}+GPIO=1${CR}${LF}`;
     const pttPressOut = `C:END*${CR}+GPIO=0${CR}${LF}`;
-    
+
     // TODO: fix react-native-bluetooth-classic handling ASCII Device Control Character 10 / LF.
     // Steps to reproduce: The bluetooth device send a data without LF. It will not trigger the listener.
     const sosPress = `C:SOS*${CR}${pttPressIn}`;
@@ -221,11 +232,14 @@ export default function App() {
     // console.log(event.data === sosPress);
     // console.log(event.data === switchUpPress);
     // console.log(event.data === switchDownPress);
+
     // let charCodeArray = [];
     // for (let i = 0; i < event.data.length; i++) {
     //   charCodeArray.push(event.data.charCodeAt(i));
     // }
     // console.log(charCodeArray);
+
+    console.log(event.data);
   };
 
   React.useEffect(() => {
