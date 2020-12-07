@@ -1,7 +1,5 @@
 import React from "react";
 import {
-  PermissionsAndroid,
-  Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -12,7 +10,7 @@ import {
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { Audio } from "expo-av";
 // import * as FileSystem from "expo-file-system";
-import RNBluetoothClassic, { BTDevice } from "react-native-bluetooth-classic";
+import RNBluetoothClassic from "react-native-bluetooth-classic";
 
 export default function App() {
   let recorder = new Audio.Recording();
@@ -86,7 +84,7 @@ export default function App() {
     }
   };
 
-  const player = new Audio.Sound();
+  let player = new Audio.Sound();
 
   const playerPlay = async (uri: string) => {
     const status = await player.getStatusAsync();
@@ -100,7 +98,13 @@ export default function App() {
       await player.playAsync();
       console.log("player is playing");
     } catch (error) {
-      console.error(`playerPlay(): ${error}`);
+      if (error.message.includes("The Sound is already loading.")) {
+        player = new Audio.Sound();
+        console.log("new player");
+        await playerPlay(uri);
+      } else {
+        console.error(`playerPlay(): ${error}`);
+      }
     }
   };
 
@@ -132,7 +136,7 @@ export default function App() {
 
   const bluetoothIsEnabled = async () => {
     try {
-      const enabled = await RNBluetoothClassic.isEnabled();
+      const enabled = await RNBluetoothClassic.isBluetoothEnabled();
       console.log(`bluetooth is enabled: ${enabled}`);
       return enabled;
     } catch (error) {
@@ -144,11 +148,11 @@ export default function App() {
   /**
    * // TODO: fix bluetooth is connected although bluetooth is not enabled.
    * Steps to reproduce: Connect to a bluetooth device -> disable the bluetooth -> use method bluetoothIsConnected();
-   * Severity: Major
+   * Severity: Minor
    */
-  const bluetoothIsConnected = async () => {
+  const bluetoothIsConnected = async (address: string) => {
     try {
-      const connected = await RNBluetoothClassic.isConnected();
+      const connected = await RNBluetoothClassic.isDeviceConnected(address);
       console.log(`bluetooth is connected: ${connected}`);
       return connected;
     } catch (error) {
@@ -157,18 +161,18 @@ export default function App() {
     }
   };
 
-  let bluetoothDeviceID = "00:13:04:84:03:07"; // TODO: let the user choose.
+  let bluetoothAddress = "00:13:04:84:03:07"; // TODO: let the user choose.
 
-  const bluetoothConnect = async (deviceID: string) => {
+  const bluetoothConnect = async (address: string) => {
     const enabled = await bluetoothIsEnabled();
     if (enabled === true) {
       try {
-        const connected = await bluetoothIsConnected();
+        const connected = await bluetoothIsConnected(address);
         if (connected === false) {
-          await RNBluetoothClassic.connect(deviceID);
-          const result = await bluetoothIsConnected();
+          await RNBluetoothClassic.connectToDevice(address);
+          const result = await bluetoothIsConnected(address);
           console.log(
-            `connected to bluetooth device with device id '${deviceID}': ${result}`
+            `connected to bluetooth device with address '${address}': ${result}`
           );
         }
       } catch (error) {
@@ -177,9 +181,9 @@ export default function App() {
     }
   };
 
-  const bluetoothList = async () => {
+  const bluetoothBondedDevices = async () => {
     try {
-      const list = await RNBluetoothClassic.list();
+      const list = await RNBluetoothClassic.getBondedDevices();
       console.log(list);
     } catch (error) {
       console.error(`bluetoothList(): ${error}`);
@@ -224,15 +228,15 @@ export default function App() {
             </Pressable>
           </View>
           <View style={styles.sectionContainer}>
-            <Pressable onPress={() => bluetoothList()}>
+            <Pressable onPress={() => bluetoothBondedDevices()}>
               <Text>Bluetooth List</Text>
             </Pressable>
           </View>
           <View style={styles.sectionContainer}>
             <Pressable
               onPress={() => {
-                if (bluetoothDeviceID !== null) {
-                  bluetoothConnect(bluetoothDeviceID);
+                if (bluetoothAddress !== null) {
+                  bluetoothConnect(bluetoothAddress);
                 }
               }}
             >

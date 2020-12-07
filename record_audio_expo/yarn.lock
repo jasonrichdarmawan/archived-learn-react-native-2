@@ -6183,10 +6183,10 @@ react-is@^16.12.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-native-bluetooth-classic@^0.10.12:
-  version "0.10.12"
-  resolved "https://registry.yarnpkg.com/react-native-bluetooth-classic/-/react-native-bluetooth-classic-0.10.12.tgz#68ed50e6f66b9e69c9f9e5b3d06754195dd46a53"
-  integrity sha512-BtMkA3jOwsE/TprT4WgWJoeaRu5Ozq0QMon7YJsZyQjDWBnIzYp0ckSC0T51uvonQXSOCFAljXphykEASXmgxQ==
+react-native-bluetooth-classic@^1.60.0-rc.4:
+  version "1.60.0-rc.4"
+  resolved "https://registry.yarnpkg.com/react-native-bluetooth-classic/-/react-native-bluetooth-classic-1.60.0-rc.4.tgz#efeedef23828bad74567c80c36a3e5b7a744d45f"
+  integrity sha512-9XUivqNrQCF2cI07NazdbhPQUCvJOBt6U2ztNHlMQTH63ADi2JJqmsdJn/CzWae2R/nHSzJqdA5zkv6PWI7sAQ==
   dependencies:
     buffer "^5.4.3"
 
