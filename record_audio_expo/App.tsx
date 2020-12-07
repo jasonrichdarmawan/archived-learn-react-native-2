@@ -209,16 +209,23 @@ export default function App() {
     const LF = String.fromCharCode(10);
     const pttPressIn = `C:BRGIN*${CR}+GPIO=1${CR}${LF}`;
     const pttPressOut = `C:END*${CR}+GPIO=0${CR}${LF}`;
+    
+    // TODO: fix react-native-bluetooth-classic handling ASCII Device Control Character 10 / LF.
+    // Steps to reproduce: The bluetooth device send a data without LF. It will not trigger the listener.
+    const sosPress = `C:SOS*${CR}${pttPressIn}`;
+    const switchUpPress = `C:VM*${CR}${pttPressIn}`;
+    const switchDownPress = `C:VP*${CR}${pttPressIn}`;
+
     // console.log(event.data === pttPressIn);
-    // console.log(event.data === pressOut);
-    // console.log(event.data === `C:SOS*${CR}${pttPressIn}`);
-    // console.log(event.data === `C:VM*${CR}${pttPressIn}`);
-    // console.log(event.data === `C:VP*${CR}${pttPressIn}`);
-    let charCodeArray = [];
-    for (let i = 0; i < event.data.length; i++) {
-      charCodeArray.push(event.data.charCodeAt(i));
-    }
-    console.log(charCodeArray);
+    // console.log(event.data === pttPressOut);
+    // console.log(event.data === sosPress);
+    // console.log(event.data === switchUpPress);
+    // console.log(event.data === switchDownPress);
+    // let charCodeArray = [];
+    // for (let i = 0; i < event.data.length; i++) {
+    //   charCodeArray.push(event.data.charCodeAt(i));
+    // }
+    // console.log(charCodeArray);
   };
 
   React.useEffect(() => {
