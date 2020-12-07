@@ -190,7 +190,9 @@ export default function App() {
             bluetoothDevice = await RNBluetoothClassic.getConnectedDevice(
               bluetoothDeviceAddress
             );
-            bluetoothReadSubscription = bluetoothDevice.onDataReceived(data => bluetoothOnDataReceived(data));
+            bluetoothReadSubscription = bluetoothDevice.onDataReceived((data) =>
+              bluetoothOnDataReceived(data)
+            );
             console.log(
               `connected to bluetooth device with address '${address}'`
             );
@@ -203,7 +205,20 @@ export default function App() {
   };
 
   const bluetoothOnDataReceived = (event: BluetoothDeviceReadEvent) => {
-    console.log(event)
+    const CR = String.fromCharCode(13);
+    const LF = String.fromCharCode(10);
+    const pttPressIn = `C:BRGIN*${CR}+GPIO=1${CR}${LF}`;
+    const pttPressOut = `C:END*${CR}+GPIO=0${CR}${LF}`;
+    // console.log(event.data === pttPressIn);
+    // console.log(event.data === pressOut);
+    // console.log(event.data === `C:SOS*${CR}${pttPressIn}`);
+    // console.log(event.data === `C:VM*${CR}${pttPressIn}`);
+    // console.log(event.data === `C:VP*${CR}${pttPressIn}`);
+    let charCodeArray = [];
+    for (let i = 0; i < event.data.length; i++) {
+      charCodeArray.push(event.data.charCodeAt(i));
+    }
+    console.log(charCodeArray);
   };
 
   React.useEffect(() => {
