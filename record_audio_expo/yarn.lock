@@ -6183,6 +6183,11 @@ react-is@^16.12.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-native-a2dp@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-a2dp/-/react-native-a2dp-1.0.3.tgz#f18007c9e681a740d15caa4df1b8f1bacb6ed3ba"
+  integrity sha512-VCdZE6EVr/rCToHacc8l8xWwRPRc+C4hT9OQrbhvZTOkYB1EoFwfcIaQYsKWxOYQFjfQT1EjKrRAW0jsb3Z+dg==
+
 react-native-bluetooth-classic@^1.60.0-rc.4:
   version "1.60.0-rc.4"
   resolved "https://registry.yarnpkg.com/react-native-bluetooth-classic/-/react-native-bluetooth-classic-1.60.0-rc.4.tgz#efeedef23828bad74567c80c36a3e5b7a744d45f"

@@ -16,6 +16,7 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "~0.63.3",
+    "react-native-a2dp": "^1.0.3",
     "react-native-bluetooth-classic": "^1.60.0-rc.4",
     "react-native-gesture-handler": "~1.7.0",
     "react-native-reanimated": "~1.13.0",
