@@ -163,11 +163,6 @@ export default function App() {
     }
   };
 
-  /**
-   * // TODO: fix bluetooth is connected although bluetooth is not enabled.
-   * Steps to reproduce: Connect to a bluetooth device -> disable the bluetooth -> use method bluetoothIsConnected();
-   * Severity: Minor
-   */
   const bluetoothIsConnected = async (address: string) => {
     try {
       const connected = await RNBluetoothClassic.isDeviceConnected(address);
@@ -183,24 +178,16 @@ export default function App() {
   let bluetoothDevice: BluetoothDevice;
   let bluetoothReadSubscription: BluetoothEventSubscription;
 
-  /**
-   * // To Do: fix bluetoothDevice.connect({ delimiter: String.fromCharCode(13) }) is ignored.
-   * // Potential cause of error: the connected device can't change delimiter.
-   * @param address
-   */
   const bluetoothConnect = async (address: string) => {
     const enabled = await bluetoothIsEnabled();
     if (enabled === true) {
       try {
         const connected = await bluetoothIsConnected(address);
         if (connected === false) {
-          await RNBluetoothClassic.connectToDevice(address);
+          bluetoothDevice = await RNBluetoothClassic.connectToDevice(address, { "DELIMITER": `*${String.fromCharCode(13)}` });
+
           const result = await bluetoothIsConnected(address);
           if (result === true) {
-            bluetoothDevice = await RNBluetoothClassic.getConnectedDevice(
-              bluetoothDeviceAddress
-            );
-            bluetoothDevice.connect({ delimiter: String.fromCharCode(13) });
             bluetoothReadSubscription = bluetoothDevice.onDataReceived((data) =>
               bluetoothOnDataReceived(data)
             );
@@ -215,31 +202,37 @@ export default function App() {
     }
   };
 
+  /**
+   * // TODO: implement A2DP.
+   * 
+   * {13} = ASCII Char Code 13 / CR
+   * {10} = ASCII Char Code 10 / LF
+   * 1. C:BRGIN*{13}+GPIO=1{13}{10}
+   * 2. C:END*{13}+GPIO=0{13}{10}
+   * 3. C:SOS*{13}
+   * 4. C:VM*{13}
+   * 5. C:VP*{13}
+   */
   const bluetoothOnDataReceived = (event: BluetoothDeviceReadEvent) => {
-    const CR = String.fromCharCode(13);
-    const LF = String.fromCharCode(10);
-    const pttPressIn = `C:BRGIN*${CR}+GPIO=1${CR}${LF}`;
-    const pttPressOut = `C:END*${CR}+GPIO=0${CR}${LF}`;
-
-    // TODO: fix react-native-bluetooth-classic handling ASCII Device Control Character 10 / LF.
-    // Steps to reproduce: The bluetooth device send a data without LF. It will not trigger the listener.
-    const sosPress = `C:SOS*${CR}${pttPressIn}`;
-    const switchUpPress = `C:VM*${CR}${pttPressIn}`;
-    const switchDownPress = `C:VP*${CR}${pttPressIn}`;
-
-    // console.log(event.data === pttPressIn);
-    // console.log(event.data === pttPressOut);
-    // console.log(event.data === sosPress);
-    // console.log(event.data === switchUpPress);
-    // console.log(event.data === switchDownPress);
-
     // let charCodeArray = [];
     // for (let i = 0; i < event.data.length; i++) {
     //   charCodeArray.push(event.data.charCodeAt(i));
     // }
     // console.log(charCodeArray);
+    // console.log(`
+    //   C:BRGIN* ${event.data.includes(`C:BRGIN*`)} \n
+    //   C:END* ${event.data.includes(`C:END*`)} \n
+    //   C:SOS* ${event.data.includes(`C:SOS*`)} \n
+    //   C:VM* ${event.data.includes(`C:VM*`)} \n
+    //   C:VP* ${event.data.includes(`C:VP*`)}
+    // `);
 
-    console.log(event.data);
+    if (event.data.includes("C:BRGIN*")) {
+    } else if (event.data.includes("C:END*")) {
+    } else if (event.data.includes("C:VM*")) {
+    } else if (event.data.includes("C:VP*")) {
+    } else if (event.data.includes("C:SOS*")) {
+    }
   };
 
   React.useEffect(() => {
