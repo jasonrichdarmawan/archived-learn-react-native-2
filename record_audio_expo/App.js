@@ -30,6 +30,10 @@ export default function App() {
    * // TODO: fix recorderInstance.startAsync() did not throw error when another app is recording.
    * Steps to reproduce: Record audio on another app -> Record audio on this app.
    * Severity: Minor
+   * 
+   * // TODO: fix startBluetoothSco() did not record audio data when the app is on the background mode after more than 5 minutes.
+   * Steps to reproduce: Sleep for 5 minutes before recording.
+   * Severity: Major
    */
   const recorderRecord = async () => {
     const status = await recorder.getStatusAsync();
@@ -108,6 +112,7 @@ export default function App() {
   let player = new Audio.Sound();
 
   const playerPlay = async (uri: string) => {
+    console.log(`playerPlay(uri): ${uri}`);
     const status = await player.getStatusAsync();
     if (status.isLoaded === true) {
       await playerStop();
