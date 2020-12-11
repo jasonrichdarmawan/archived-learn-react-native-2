@@ -15,6 +15,7 @@ import RNBluetoothClassic, {
   BluetoothEventSubscription,
   BluetoothDevice,
 } from "react-native-bluetooth-classic";
+import A2dp from "react-native-a2dp";
 
 // To Do: From discussion with the owner, the react-natie-bluetooth-classic auto generate the types,
 // to avoid types issue, we should use .js, and isolate the component as small as possible.
@@ -25,6 +26,11 @@ export default function App() {
   let recorder = new Audio.Recording();
   let uri: string | null;
 
+  /**
+   * // TODO: fix recorderInstance.startAsync() did not throw error when another app is recording.
+   * Steps to reproduce: Record audio on another app -> Record audio on this app.
+   * Severity: Major
+   */
   const recorderRecord = async () => {
     const status = await recorder.getStatusAsync();
     if (status.isDoneRecording === true) {
@@ -38,6 +44,8 @@ export default function App() {
         );
         uri = recorder.getURI();
         console.log(`recorder is prepared: ${uri}`);
+        await A2dp.startBluetoothSco();
+        console.log(`recorderRecord(): startBluetoothSco()`);
         await recorder.startAsync();
         console.log("recorder is recording");
       } catch (error) {
@@ -64,6 +72,8 @@ export default function App() {
       try {
         await recorder.stopAndUnloadAsync();
         console.log("recorder stopped");
+        await A2dp.stopBluetoothSco();
+        console.log("recorderStop(): stopBluetoothSco()");
       } catch (error) {
         if (
           error.message.includes(
@@ -219,21 +229,42 @@ export default function App() {
     //   charCodeArray.push(event.data.charCodeAt(i));
     // }
     // console.log(charCodeArray);
-    // console.log(`
-    //   C:BRGIN* ${event.data.includes(`C:BRGIN*`)} \n
-    //   C:END* ${event.data.includes(`C:END*`)} \n
-    //   C:SOS* ${event.data.includes(`C:SOS*`)} \n
-    //   C:VM* ${event.data.includes(`C:VM*`)} \n
-    //   C:VP* ${event.data.includes(`C:VP*`)}
-    // `);
 
     if (event.data.includes("C:BRGIN*")) {
+      recorderRecord();
+      console.log("bluetoothOnDataReceived(): startBluetoothSco()");
     } else if (event.data.includes("C:END*")) {
+      recorderStop();
+      console.log("bluetoothOnDataReceived(): stopBluetoothSco()");
     } else if (event.data.includes("C:VM*")) {
+      console.log("switch group up");
     } else if (event.data.includes("C:VP*")) {
+      console.log("switch group down");
     } else if (event.data.includes("C:SOS*")) {
+      console.log("sos");
     }
   };
+
+  let bluetoothA2DPDeviceList = [];
+
+  const bluetoothA2DPList = async () => {
+    bluetoothA2DPDeviceList = await A2dp.deviceList();
+    console.log(bluetoothA2DPDeviceList);
+  }
+
+  /**
+   * TODO: fork the library and add method to return the connection status.
+   */
+  const bluetoothA2DPConnect = async () => {
+    if (bluetoothA2DPDeviceList.length > 0) {
+      try {
+        await A2dp.connectA2dp(bluetoothA2DPDeviceList[0].id);
+        console.log(`bluetootA2DPConnect() triggered`);
+      } catch (error) {
+        console.error(`bluetoothA2DPConnect(): ${error}`);
+      }
+    }
+  }
 
   React.useEffect(() => {
     console.log("re-render");
