@@ -36,7 +36,6 @@ export default function App() {
     console.log(`recorderRecord() status.canRecord: ${status.canRecord}`);
     if (status.isDoneRecording === true) {
       recorder = new Audio.Recording();
-      new Audio.setAudioModeAsync
       console.log("recorderRecord(): new recorder object");
     }
     if (status.canRecord === false) {
