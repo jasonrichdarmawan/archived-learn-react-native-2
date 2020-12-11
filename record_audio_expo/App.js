@@ -29,7 +29,7 @@ export default function App() {
   /**
    * // TODO: fix recorderInstance.startAsync() did not throw error when another app is recording.
    * Steps to reproduce: Record audio on another app -> Record audio on this app.
-   * Severity: Major
+   * Severity: Minor
    */
   const recorderRecord = async () => {
     const status = await recorder.getStatusAsync();
