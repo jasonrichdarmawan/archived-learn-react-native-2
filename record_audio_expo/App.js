@@ -68,7 +68,6 @@ export default function App() {
    * 
    */
   const recorderStop = async () => {
-    // await new Promise((resolve) => setTimeout(resolve, 1000)); // handle Error: Stop encountered an error: recording not stopped
     const status = await recorder.getStatusAsync();
     console.log(`recorderStop() status.isRecording: ${status.isRecording}`);
     if (status.isRecording === true) {
