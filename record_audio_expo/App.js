@@ -33,8 +33,10 @@ export default function App() {
    */
   const recorderRecord = async () => {
     const status = await recorder.getStatusAsync();
+    console.log(`recorderRecord() status.canRecord: ${status.canRecord}`);
     if (status.isDoneRecording === true) {
       recorder = new Audio.Recording();
+      new Audio.setAudioModeAsync
       console.log("recorderRecord(): new recorder object");
     }
     if (status.canRecord === false) {
@@ -64,10 +66,16 @@ export default function App() {
    * Severity: Minor
    *
    * https://github.com/expo/expo/issues/1709
+   * 
+   * // TODO: TypeError: undefined is not an object (evaluating 'userAudioMode.hasOwnProperty')
+   * Steps to reproduce: invoke `recorderRecord()` and `recorderStop()` while on background mode.
+   * Severity: Major
+   * Caused by: L76 await new Promise(...
    */
   const recorderStop = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // handle Error: Stop encountered an error: recording not stopped
+    // await new Promise((resolve) => setTimeout(resolve, 1000)); // handle Error: Stop encountered an error: recording not stopped
     const status = await recorder.getStatusAsync();
+    console.log(`recorderStop() status.isRecording: ${status.isRecording}`);
     if (status.isRecording === true) {
       try {
         await recorder.stopAndUnloadAsync();
