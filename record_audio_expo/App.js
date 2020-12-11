@@ -66,10 +66,6 @@ export default function App() {
    *
    * https://github.com/expo/expo/issues/1709
    * 
-   * // TODO: TypeError: undefined is not an object (evaluating 'userAudioMode.hasOwnProperty')
-   * Steps to reproduce: invoke `recorderRecord()` and `recorderStop()` while on background mode.
-   * Severity: Major
-   * Caused by: L76 await new Promise(...
    */
   const recorderStop = async () => {
     // await new Promise((resolve) => setTimeout(resolve, 1000)); // handle Error: Stop encountered an error: recording not stopped
