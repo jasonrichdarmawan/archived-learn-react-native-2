@@ -32,7 +32,7 @@ export default function App() {
    * Severity: Minor
    * 
    * // TODO: fix startBluetoothSco() did not record audio data when the app is on the background mode after more than 5 minutes.
-   * Steps to reproduce: Sleep for 5 minutes before recording.
+   * Steps to reproduce: Wait for 5 minutes before recording.
    * Severity: Major
    */
   const recorderRecord = async () => {
@@ -48,7 +48,7 @@ export default function App() {
           Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY
         );
         uri = recorder.getURI();
-        console.log(`recorder is prepared: ${uri}`);
+        console.log(`recorder is prepared: recorder.getURI(): ${recorder.getURI()} uri: ${uri} equal: ${recorder.getURI() === uri}`);
         await A2dp.startBluetoothSco();
         console.log(`recorderRecord(): startBluetoothSco()`);
         await recorder.startAsync();
@@ -72,6 +72,7 @@ export default function App() {
    * 
    */
   const recorderStop = async () => {
+    console.log('recorderStop() invoked');
     const status = await recorder.getStatusAsync();
     console.log(`recorderStop() status.isRecording: ${status.isRecording}`);
     if (status.isRecording === true) {
@@ -238,11 +239,11 @@ export default function App() {
     // console.log(charCodeArray);
 
     if (event.data.includes("C:BRGIN*")) {
+      console.log("bluetoothOnDataReceived(): C:BRGIN*");
       recorderRecord();
-      console.log("bluetoothOnDataReceived(): startBluetoothSco()");
     } else if (event.data.includes("C:END*")) {
+      console.log("bluetoothOnDataReceived(): C:END*");
       recorderStop();
-      console.log("bluetoothOnDataReceived(): stopBluetoothSco()");
     } else if (event.data.includes("C:VM*")) {
       console.log("switch group up");
     } else if (event.data.includes("C:VP*")) {
@@ -292,7 +293,7 @@ export default function App() {
           <View style={styles.sectionContainer}>
             <Pressable
               onPress={() => {
-                if (uri !== null) {
+                if (uri !== undefined) {
                   playerPlay(uri);
                 }
               }}
