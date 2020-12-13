@@ -7,6 +7,7 @@ import {
 } from "react-native";
 
 import CalendarModule from "./CalendarModule";
+import ImagePickerModule from "./ImagePickerModule";
 
 const { DEFAULT_EVENT_NAME } = CalendarModule.getConstants();
 
@@ -59,11 +60,17 @@ const NewModuleButton = () => {
     }
   };
 
+  const getUri = async () => {
+    await ImagePickerModule.pickImage()
+      .then((uri) => console.log(uri))
+      .catch((reason) => console.error(reason));
+  };
+
   return (
     <Button
       title="Click to invoke your native module!"
       color="#841584"
-      onPress={() => CalendarModule.testSendEvent()}
+      onPress={getUri}
     />
   );
 };
