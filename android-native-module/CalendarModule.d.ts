@@ -6,4 +6,5 @@ export interface CalendarInterface {
     failureCallback: (error: string) => void,
     successCallback: (eventID: number) => void
   ): void;
+  createCalendarEventPromise(name: string, location: string): Promise<void>;
 }

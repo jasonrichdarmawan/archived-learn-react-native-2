@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -40,5 +41,16 @@ public class CalendarModule extends ReactContextBaseJavaModule {
 
 //        a native module method can only invoke one callback, one time.
 //        successCallback.invoke(eventID);
+    }
+
+    @ReactMethod
+    public void createCalendarEventPromise(String name, String location, Promise promise) {
+        try {
+            double eventID = 1;
+            throw new Exception("test");
+//            promise.resolve(eventID);
+        } catch (Exception e) {
+            promise.reject("Create Event Error", "Error message", e);
+        }
     }
 }

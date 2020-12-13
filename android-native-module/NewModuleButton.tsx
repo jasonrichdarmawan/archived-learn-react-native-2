@@ -21,11 +21,23 @@ const NewModuleButton = () => {
     );
   };
 
+  const onPressPromise = async () => {
+    try {
+      const eventID = await CalendarModule.createCalendarEventPromise(
+        "Party",
+        "My House"
+      );
+      console.log(`Created a new event with ID ${eventID}`);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <Button
       title="Click to invoke your native module!"
       color="#841584"
-      onPress={onPress}
+      onPress={onPressPromise}
     />
   );
 };
