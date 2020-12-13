@@ -7,4 +7,9 @@ export interface CalendarInterface {
     successCallback: (eventID: number) => void
   ): void;
   createCalendarEventPromise(name: string, location: string): Promise<void>;
+
+  /**
+   * native modules send event without being invoked.
+   */
+  testSendEvent(): void;
 }

@@ -3,12 +3,17 @@ package com.androidnativemodule;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +36,7 @@ public class CalendarModule extends ReactContextBaseJavaModule {
         super(context);
     }
 
-//    the last argument to a native module method call, if it's a function, is treated as the successCallback,
+    //    the last argument to a native module method call, if it's a function, is treated as the successCallback,
 //    and the second to last argument to a native module method call, if it's a function, is treated as the failure callback.
     @ReactMethod
     public void createCalendarEvent(String name, String location, Callback failureCallback, Callback successCallback) {
@@ -53,4 +58,19 @@ public class CalendarModule extends ReactContextBaseJavaModule {
             promise.reject("Create Event Error", "Error message", e);
         }
     }
+
+    private void sendEvent(String eventName, @Nullable WritableMap params) {
+        getReactApplicationContext()
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
+    }
+
+    @ReactMethod
+    public void testSendEvent() {
+        WritableMap params = Arguments.createMap();
+        params.putString("eventProperty", "someValue");
+        sendEvent("EventReminder", params);
+    }
+
+
 }
