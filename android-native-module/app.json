@@ -1,0 +1,12 @@
+{
+  "name": "android-native-module",
+  "displayName": "android-native-module",
+  "expo": {
+    "name": "android-native-module",
+    "slug": "android-native-module",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
