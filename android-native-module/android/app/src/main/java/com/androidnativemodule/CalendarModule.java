@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -20,17 +21,24 @@ public class CalendarModule extends ReactContextBaseJavaModule {
 
     @Override
     public Map<String, Object> getConstants() {
-       final Map<String, Object> constants = new HashMap<>();
-       constants.put("DEFAULT_EVENT_NAME", "New Event");
-       return constants;
+        final Map<String, Object> constants = new HashMap<>();
+        constants.put("DEFAULT_EVENT_NAME", "New Event");
+        return constants;
     }
 
     CalendarModule(ReactApplicationContext context) {
         super(context);
     }
 
+//    the last argument to a native module method call, if it's a function, is treated as the successCallback,
+//    and the second to last argument to a native module method call, if it's a function, is treated as the failure callback.
     @ReactMethod
-    public void createCalendarEvent(String name, String location) {
+    public void createCalendarEvent(String name, String location, Callback failureCallback, Callback successCallback) {
         Log.d(getName(), "Create event called with name: " + name + " and location: " + location);
+        double eventID = 1;
+        failureCallback.invoke("error");
+
+//        a native module method can only invoke one callback, one time.
+//        successCallback.invoke(eventID);
     }
 }

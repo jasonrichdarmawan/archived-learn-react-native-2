@@ -7,9 +7,18 @@ const { DEFAULT_EVENT_NAME } = CalendarModule.getConstants();
 
 const NewModuleButton = () => {
   const onPress = () => {
-    console.log('We will invoke the native module here!');
+    console.log("We will invoke the native module here!");
     console.log(DEFAULT_EVENT_NAME);
-    CalendarModule.createCalendarEvent('testName', 'testLocation');
+    CalendarModule.createCalendarEvent(
+      "testName",
+      "testLocation",
+      (error) => {
+        console.error(`Error found! ${error}`);
+      },
+      (eventID) => {
+        console.log(`Created a new event with id ${eventID}`);
+      }
+    );
   };
 
   return (
