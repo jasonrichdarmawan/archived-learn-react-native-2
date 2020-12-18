@@ -12,7 +12,9 @@
   "dependencies": {
     "react": "16.13.1",
     "react-native": "0.63.4",
-    "react-native-recording": "^0.5.1"
+    "react-native-recording": "^0.5.1",
+    "sockjs-client": "^1.5.0",
+    "stompjs": "^2.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
