@@ -10,9 +10,11 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/audio-toolkit": "^2.0.3",
     "@stomp/stompjs": "^6.0.0",
     "react": "16.13.1",
     "react-native": "0.63.4",
+    "react-native-fs": "^2.16.6",
     "react-native-recording": "^0.5.1",
     "rnsaveaudio": "^1.0.6",
     "sockjs-client": "^1.5.0",
