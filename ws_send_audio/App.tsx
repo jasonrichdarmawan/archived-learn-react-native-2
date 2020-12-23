@@ -64,7 +64,11 @@ const App = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     listener = Recording.addRecordingEventListener((data: number[]) => {
-      console.log('record', data.length);
+      console.log(
+        'record concat bytes',
+        // eslint-disable-next-line no-undef
+        new Blob([JSON.stringify(data)]).size,
+      );
       // eslint-disable-next-line react-hooks/exhaustive-deps
       audioInt16 = audioInt16.concat(data);
     });
@@ -82,8 +86,8 @@ const App = () => {
     ]);
 
     Recording.init({
-      bufferSize: 4096,
-      sampleRate: 44100,
+      bufferSize: 1600,
+      sampleRate: 8000, // require manual edit of RNSaveAudioModule.java
       bitsPerChannel: 16,
       channelsPerFrame: 1,
     });
@@ -109,8 +113,8 @@ const App = () => {
   const path = RNFS.DocumentDirectoryPath + '/test.wav';
 
   const saveAudio = async () => {
-    const promise = await RNSaveAudio.saveWav(path, audioInt16);
-    console.log('save audio', promise, path);
+    await RNSaveAudio.saveWav(path, audioInt16);
+    console.log('save audio', audioInt16);
   };
 
   let player = new Player(path);
@@ -125,16 +129,6 @@ const App = () => {
         player.play();
       });
     }
-
-    // try {
-    //   console.log('play audio');
-    //   SoundPlayer.playSoundFile(RNFS.DocumentDirectoryPath + 'test2', 'wav');
-    //   // SoundPlayer.playUrl(
-    //   //   'https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand3.wav',
-    //   // );
-    // } catch (e) {
-    //   console.error('cannot play the sound file', e);
-    // }
   };
 
   const readDir = () => {
